@@ -8,13 +8,13 @@
 
 makeCacheMatrix <- function(x = matrix()) {
         
-        M <- NULL               
+        M <- NULL               # sets object value as NULL in current environment
         set <- function(y) {    
                 x <<- y         
-                M <<- NULL      
+                M <<- NULL      # sets object value as NULL in outside of current environment
         }
         get <- function() x
-        setINV <- function(solve) M <<- solve  
+        setINV <- function(solve) M <<- solve  # creates function to calc inverse matrix
         getINV <- function() M
         list (set = set, get = get,            
               setINV = setINV,
@@ -29,14 +29,14 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
                 
-        M <- x$getINV()
-        if(!is.null(M)) {
+        M <- x$getINV()         # checks for cached inverse matrix
+        if(!is.null(M)) {       # if cached inverse matrix found, it will be returned
                 message("getting cached inverse matrix")
                 return(M)
         }
-        data <- x$get()
-        M <- solve(data, ...)
-        x$setINV(M)
+        data <- x$get()         
+        M <- solve(data, ...)   # calculates inverse matrix, if not cached
+        x$setINV(M)             # caches calculated inverse matrix
         M
 }
 
@@ -48,5 +48,5 @@ cacheSolve <- function(x, ...) {
 # a                                     # shows that a is now a list of functions
 # a$set(matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))     # sets the matrix
 # a$get()                                              # gets the matrix
-# cacheSolve(a)                                        # calculates the inverse matrix
+# cacheSolve(a)                                        # calculates the inverse matrix & caches it
 # cacheSolve(a)                                        # returns the cached inverse matrix
